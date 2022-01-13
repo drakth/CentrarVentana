@@ -90,7 +90,18 @@ namespace CentrarVentana
 
                 if (!GetWindowRect(new HandleRef(hwnd, hwnd), out rct))
                 {
-                    MessageBox.Show("ERROR"); return;
+                    //Si por alguna razon fallo... intentamos de otra forma...
+                    //Esto es para arreglar el bug edge y posiblemente otros browsaers
+                    //Bug 001 en github.
+
+                    Process processes = Process.GetProcessById(idProceso);
+                    IntPtr windowHandle = processes.MainWindowHandle;
+                    hwnd = windowHandle;
+                    if (!GetWindowRect(new HandleRef(hwnd, hwnd), out rct))
+                    {
+                        MessageBox.Show("ERROR");
+                        return;
+                    }
                 }
 
                 myRect.X = rct.Left;
